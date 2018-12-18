@@ -18,9 +18,9 @@ const print_lines =(lines)=>
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].color != undefined) {
             if (lines[i].color==='red')
-                string+= '<span style="color: red; ">' + lines[i].line + '</span><br>';
+                string+= '<span style="background-color:red; ">' + lines[i].line + '</span><br>';
             else
-                string += '<span style="color: MediumSeaGreen; ">' + lines[i].line + '</span><br>';
+                string += '<span style="background-color: MediumSeaGreen; ">' + lines[i].line + '</span><br>';
         }else
             string += lines[i].line + '<br>';
     }
