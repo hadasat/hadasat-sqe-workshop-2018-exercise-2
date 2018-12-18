@@ -32,11 +32,20 @@ let program_return = 'function foo(x, y, z){\n' +
     '    return a;\n' +
     '}\n';
 
+let program_array = 'function foo(x, y, z){\n' +
+    'let b;' +
+    'let a = [x,y];\n' +
+    '    if(a[0] < 1)\n' +
+    'return 1;\n' +
+    'return 2;\n' +
+    '}\n';
 let input_vector = '{x:2,y:5,z:7}';
 let parsed_p_if = parseCode(program_one,input_vector);
 let parsed_p_empty = parseCode(program_one,undefined);
 let parsed_p_while = parseCode(program_while,input_vector);
 let parsed_p_return = parseCode(program_return,input_vector);
+let parsed_p_array = parseCode(program_array,input_vector)
+let void_p = parseCode('','');
 
 describe('The if program', () => {
     it('check while state length code', () => {
@@ -109,5 +118,16 @@ describe('change the valuse of variables', () => {
             '    return x * 0;'
         );
     });
+    it('check array replacement', () =>{
+        assert.equal( parsed_p_array[1].line,
+            '    if(x < 1)'
+        );
+    });
+    it('check array replacement', () =>{
+        assert.equal( void_p.line,
+            undefined
+        );
+    });
+
 
 });

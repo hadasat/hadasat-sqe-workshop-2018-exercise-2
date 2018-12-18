@@ -44,6 +44,16 @@ const operator_with_zero = (op,side) =>{
     return false;
 };
 
+const eval_array = (code)=>{
+    let array_size = code.elements.length;
+    let new_array = new Array(array_size);
+    for(let i =0; i<array_size;i++){
+        let element = eval_the_vars(code.elements[i]);
+        new_array[i] = element;
+    }
+    return new_array;
+}
+
 const eval_binary = (value) =>{
     let left,operator,right;
     left = eval_the_vars(value.left);
@@ -67,6 +77,13 @@ const eval_identifier = (value) =>{
         return var_name;
 };
 
+const eval_member = (value)=>{
+    let var_name = value.object.name;
+    let num_in_array =eval_the_vars(value.property);
+    let variable = variable_table.find((x) => x.name === var_name);
+    return variable.value[num_in_array];
+}
+
 const eval_the_vars = (value) =>{
     switch (value.type) {
     case 'BinaryExpression':
@@ -75,6 +92,12 @@ const eval_the_vars = (value) =>{
         return eval_identifier(value);
     case 'Literal':
         return value.value;
+    case  'ArrayExpression':
+        return eval_array(value);
+    case 'MemberExpression':
+        return eval_member(value);
+
+
     }
 };
 
@@ -107,8 +130,7 @@ const eval_function_decleration = (code) => {
 const eval_block_statement = (statment_array) => {
     statment_array.map (
         (x) => {
-            if(x != null)
-                parse_start(x);
+            parse_start(x);
         }
     );
 
@@ -165,7 +187,7 @@ const eval_condition = (code) => {
     if(code.type === 'WhileStatement'){
         eval_color_condition(new_test,new_line,location);
         parse_start(code.body);}
-    else if(code.type === 'IfStatement'){
+    else {
         let save_vars = [...variable_table];
         eval_color_condition(new_test,new_line,location);
         parse_start(code.consequent);
@@ -174,6 +196,7 @@ const eval_condition = (code) => {
         variable_table = [...save_vars];
     }
 };
+
 
 const eval_return_statement = (code) =>{
     let location = code.loc.start.line - 1;
@@ -187,7 +210,7 @@ const eval_return_statement = (code) =>{
 };
 
 const parse_start = (code) => {
-    if (code != null) {
+    if (code != undefined) {
         switch (code.type) {
         case 'Program' :
             code.body.map((x) => parse_start(x));
@@ -207,18 +230,16 @@ const parse_start = (code) => {
 };
 
 const parsed_vars = (code) => {
-    if (code != null) {
-        switch (code.type) {
-        case 'VariableDeclaration' :
-            eval_variables(code.declarations);
-            break;
-        case 'ExpressionStatement' :
-            eval_expression_statement(code.expression);
-            break;
-        default :
-            parse_loops(code);
-            break;
-        }
+    switch (code.type) {
+    case 'VariableDeclaration' :
+        eval_variables(code.declarations);
+        break;
+    case 'ExpressionStatement' :
+        eval_expression_statement(code.expression);
+        break;
+    default :
+        parse_loops(code);
+        break;
     }
 };
 
