@@ -52,7 +52,7 @@ const eval_array = (code)=>{
         new_array[i] = element;
     }
     return new_array;
-}
+};
 
 const eval_binary = (value) =>{
     let left,operator,right;
@@ -82,7 +82,7 @@ const eval_member = (value)=>{
     let num_in_array =eval_the_vars(value.property);
     let variable = variable_table.find((x) => x.name === var_name);
     return variable.value[num_in_array];
-}
+};
 
 const eval_the_vars = (value) =>{
     switch (value.type) {
